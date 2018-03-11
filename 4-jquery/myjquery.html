@@ -1,0 +1,172 @@
+<html>
+
+    <title>AJAX</title>
+
+    <head>
+        <script type="text/javascript" src="jquery-3.1.1.min.js"></script>
+        
+        <style type="text/css">
+        
+            body{
+                font-family: sans-serif;
+                padding: 0;
+                margin: 0;
+            }   
+            #header{
+                
+                width:100%;
+                background-color: #EEEEEE;
+                padding: 5px;
+                height:30px;
+                border-bottom: 1px solid #CCCCCC;
+            }
+            
+            #logo{
+                
+                float: left;
+                padding: 3px 5px;
+                font-weight: bold;
+                font-size: 120%;
+            }
+            
+            #buttonContainer{
+                
+                width: 364px;
+                margin: 0 auto;
+                height: 30px;
+                border: 1px solid #CCCCCC;
+                border-radius: 7px;
+            }
+
+            .toggleButton{
+                
+                text-align: center;
+                float: left;
+                border-left:1px solid #CCCCCC;
+                padding: 5px;
+                height:20px;
+                width: 80px;
+                
+            }
+            #html{
+                border-left: none;
+                border-bottom-left-radius: 7px;
+                border-top-left-radius: 7px;
+            }
+            #output{
+                border-bottom-right-radius: 7px;
+                border-top-right-radius: 7px;
+            }
+            
+            .active{
+                background-color: #ECF2FA;
+            }
+            
+            .highlightedButton{
+                background-color: #DDDDDD;
+            }
+            .activehigh{
+                background-color: #F5F9FF;
+            }
+            
+            textarea{
+                border-top: none;
+                height:100%;
+                resize: none;
+            }
+            .panel{
+                float: left;
+                width: 50%;
+                border-left: none;
+            }
+            
+            .hidden{
+                display: none;
+            }            
+            iframe{
+                border:none;
+                height:100%;
+                width:250px;
+            }
+            
+        </style>
+    </head>
+    <body>
+        
+        <div id="header">
+        
+            <div id="logo">
+                CodePlayer
+            </div>
+            <div id="buttonContainer">
+            
+                <div class="toggleButton active" id="html">HTML</div>
+                
+                <div class="toggleButton" id="css">CSS</div>
+                
+                <div class="toggleButton" id="js">Javascript</div>
+                
+                <div class="toggleButton active" id="output">Output</div>
+            
+            </div>
+        </div>
+        
+        <div id="bodyContainer">
+        
+            <textarea id="htmlPanel" class="panel"><p id="paragraph">Hello World!</p></textarea>
+            <textarea id="cssPanel" class="panel hidden">p{color:green;}</textarea>
+            <textarea id="jsPanel" class="panel hidden">document.getElementById("paragraph").innerHTML="Hello Rob";</textarea>
+            <iframe id="outputPanel" class="panel"></iframe>
+        
+        
+        
+        </div>
+        
+       
+        <script type="text/javascript">
+            
+                function update()
+                {
+                    $("iframe").contents().find("html").html("<html><head><style type='text/css'>"+$("#cssPanel").val()+"</style>"+"<body>"+$("#htmlPanel").val()+"</body></html>");
+                    
+                    document.getElementById("outputPanel").contentWindow.eval($("#jsPanel").val());
+                    
+                    
+
+                }
+            
+                $(".toggleButton").hover(function(){
+                    if($(this).hasClass("active"))
+                        {
+                            $(this).addClass("activehigh");
+                        }
+                    else
+                        {
+                            $(this).addClass("highlightedButton");
+                        }
+                },function(){
+                    $(this).removeClass("highlightedButton");
+                    $(this).removeClass("activehigh");
+                });
+                
+                $(".toggleButton").click(function(){
+                    $(this).toggleClass("active");
+                    $(this).removeClass("highlightedButton");   
+                    $(this).removeClass("activehigh");
+                    var panelId=$(this).attr("id")+"Panel";
+                    $("#"+panelId).toggleClass("hidden");
+                    var numberOfActivePanels=4-$(".hidden").length;
+                    $(".panel").width(($(window).width()/numberOfActivePanels)-10);
+                });
+            
+                $("textarea").height($(window).height()-$("#header").height()-55);
+                $(".panel").width(($(window).width()/2)-10);
+                update();
+                $("textarea").on("change keyup paste",function(){
+                     update();
+                });
+                
+        </script>
+        
+    </body>
+</html>
